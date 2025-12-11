@@ -4,6 +4,59 @@ import os
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 MUSHROOM_DATA_FILE = os.path.join(PROJECT_DIR, "mushroom", "agaricus-lepiota.data")
 PARAMS_FILE = os.path.join(PROJECT_DIR, "parameters.pkl")
+COLUMN_NAMES = [ 'poisonous','cap-shape', 'cap-surface', 'cap-color', 'bruises', 'odor', 
+                           'gill-attachment', 'gill-spacing', 'gill-size', 'gill-color',
+                           'stalk-shape', 'stalk-root', 'stalk-surface-above-ring',
+                           'stalk-surface-below-ring', 'stalk-color-above-ring',
+                           'stalk-color-below-ring', 'veil-type', 'veil-color', 'ring-number',
+                           'ring-type','spore-print-color', 'population', 'habitat']
+    
+POSSIBLE_VALUES=[['e','p'],
+    ['b','c','x','f','k','s'],
+    ['f','g','y','s'],
+    ['n','b','c','g','r'],
+    ['t','f'],
+    ['a','l','c','y','f','m','n','p','s'],
+    ['a','d','f','n'],
+    ['c','w','d'],
+    ['b','n'],
+    ['k','n','b','h','g','r','o','p','u','e','w','y'],
+    ['e','t'],
+    ['b','c','u','e','z','r','?'],
+    ['s','f','k','y'],
+    ['s','f','k','y'],
+    ['n','b','c','g','o','p','e','w','y'],
+    ['n','b','c','g','o','p','e','w','y'],
+    ['p','u'],
+    ['n','o','y','w'],
+    ['n','o','t'],
+    ['c','e','f','l','n','p','s','z'],
+    ['k','n','b','h','r','o','u','w','y'],
+    ['a','c','n','s','v','y'],
+    ['g','l','m','p','u','w','d']]
+
+MEANINGS=['bell=b,conical=c,convex=x,flat=f, knobbed=k,sunken=s',
+ 'fibrous=f,grooves=g,scaly=y,smooth=s',
+ 'brown=n,buff=b,cinnamon=c,gray=g,green=r,pink=p,purple=u,red=e,white=w,yellow=y',
+ 'no=f,yes=t',
+ 'almond=a,anise=l,creosote=c,fishy=y,foul=f,musty=m,none=n,pungent=p,spicy=s',
+ 'attached=a,descending=d,free=f,notched=n',
+ 'close=c,crowded=w,distant=d',
+ 'broad=b,narrow=n',
+ 'black=k,brown=n,buff=b,chocolate=h,gray=g,green=r,orange=o,pink=p,purple=u,red=e,white=w,yellow=y',
+ 'enlarging=e,tapering=t',
+ 'bulbous=b,club=c,cup=u,equal=e,rhizomorphs=z,rooted=r,missing=?',
+ 'fibrous=f,scaly=k,silky=y,smooth=s',
+ 'fibrous=f,scaly=k,silky=y,smooth=s',
+ 'brown=n,buff=b,cinnamon=c,gray=g,orange=o,pink=p,red=e,white=w,yellow=y',
+ 'brown=n,buff=b,cinnamon=c,gray=g,orange=o,pink=p,red=e,white=w,yellow=y',
+ 'partial=p,universal=u',
+ 'brown=n,orange=o,white=w,yellow=y',
+ 'none=n,one=o,two=t',
+ 'cobwebby=c,evanescent=e,flarging=f,large=l,none=n,pendant=p,sheating=s,zone=z',
+ 'black=k,brown=n,buff=b,chocolate=h,gray=g,green=r,orange=o,pink=p,purple=u,red=e,white=w,yellow=y',
+ 'abundant=a,clustered=c,numerous=n,scattered=s,several=v,solitary=y', 
+ 'grasses=g,leaves=l,meadows=m,paths=p,urban=u,waste=w,woods=d']
 
 # to use only for debug
 def display_loaded_data_info(x, y, parameters):

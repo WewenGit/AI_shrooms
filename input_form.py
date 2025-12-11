@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 import pandas as pd
 import os
-from model import PROJECT_DIR, MUSHROOM_DATA_FILE
+from model import PROJECT_DIR, COLUMN_NAMES, POSSIBLE_VALUES, MEANINGS
 
 
 class DataInputGUI:
@@ -12,18 +12,8 @@ class DataInputGUI:
         self.root.title("Mushroom Data Input Form")
         self.root.geometry("600x800")
         
-        self.column_names = ['cap-shape', 'cap-surface', 'cap-color', 'bruises', 'odor', 
-                            'gill-attachment', 'gill-spacing', 'gill-size', 'gill-color',
-                            'stalk-shape', 'stalk-root', 'stalk-surface-above-ring',
-                            'stalk-surface-below-ring', 'stalk-color-above-ring',
-                            'stalk-color-below-ring', 'veil-type', 'veil-color', 'ring-number',
-                            'ring-type', 'spore-print-color', 'population', 'habitat']
-        
         self.entry_widgets = {}
         self.input_data = {}
-        
-        # Load data to get unique values for each column
-        self.load_unique_values()
         
         # Create main frame with scrollbar
         main_frame = ttk.Frame(root)
@@ -63,68 +53,59 @@ class DataInputGUI:
         
         self.reset_button = ttk.Button(button_frame, text="Reset to Random", command=self.reset_to_random)
         self.reset_button.pack(side=tk.LEFT, padx=5)
-    
-    def load_unique_values(self):
-        try:
-            column_names = ['cap-shape', 'cap-surface', 'cap-color', 'bruises', 'odor', 
-                           'gill-attachment', 'gill-spacing', 'gill-size', 'gill-color',
-                           'stalk-shape', 'stalk-root', 'stalk-surface-above-ring',
-                           'stalk-surface-below-ring', 'stalk-color-above-ring',
-                           'stalk-color-below-ring', 'veil-type', 'veil-color', 'ring-number',
-                           'ring-type', 'spore-print-color', 'population', 'habitat', 'class']
-            
-            df = pd.read_csv(MUSHROOM_DATA_FILE, header=None, names=column_names)
-            
-            # Store unique values for each column (excluding target)
-            self.unique_values = {}
-            for col in self.column_names:
-                self.unique_values[col] = sorted(df[col].unique().tolist())
-        
-        except Exception as e:
-            messagebox.showerror("Error", f"Failed to load data: {e}")
-            self.unique_values = {col: [] for col in self.column_names}
+
     
     def create_input_fields(self, parent_frame):
-        """Create input fields for each column"""
-        for idx, col in enumerate(self.column_names):
+        for idx,col in enumerate(COLUMN_NAMES[1:]):
             # Create frame for each row
             row_frame = ttk.Frame(parent_frame)
             row_frame.pack(fill=tk.X, pady=5, padx=5)
             
             # Label
             label = ttk.Label(row_frame, text=f"{col}:", width=25)
-            label.pack(side=tk.LEFT, padx=5)
             
             # Combobox or Entry depending on number of unique values
-            unique_vals = self.unique_values.get(col, [])
+            unique_vals = POSSIBLE_VALUES[idx+1]
             
             if len(unique_vals) <= 20 and len(unique_vals) > 0:
                 # Use Combobox for columns with few unique values
                 widget = ttk.Combobox(row_frame, values=unique_vals, width=20, state="readonly")
+                widget.config(state='normal')
                 if unique_vals:
                     widget.current(0)  # Set default to first value
             else:
                 # Use Entry for columns with many unique values
                 widget = ttk.Entry(row_frame, width=25)
+                widget.config(state='normal')
                 if unique_vals:
                     widget.insert(0, unique_vals[0])  # Set default to first value
+
+            # meanings
+            label2 = ttk.Label(row_frame, text=MEANINGS[idx], width='auto')
             
-            widget.pack(side=tk.LEFT, padx=5, fill=tk.X, expand=True)
+            # Toggle button to enable/disable field
+            toggle_var = tk.BooleanVar(value=True)
+            toggle_btn = ttk.Checkbutton(row_frame, variable=toggle_var, w=widget, v=self.toggle_widget(widget))
+            
+            toggle_btn.pack(side=tk.LEFT, padx=5)
+            label.pack(side=tk.LEFT, padx=5)
+            widget.pack(side=tk.LEFT, padx=5, fill=tk.X)
+            label2.pack(side=tk.LEFT, padx=5)
+
             self.entry_widgets[col] = widget
     
     def get_input_data(self):
-        """Get all input data from widgets"""
         data = {}
         for col, widget in self.entry_widgets.items():
             value = widget.get()
             if not value:
                 messagebox.showwarning("Missing Value", f"Please provide a value for {col}")
                 return None
-            data[col] = value
+            if widget['state']=='normal':
+                data[col] = value
         return data
     
     def show_results(self):
-        """Show the combined results in a new window"""
         input_data = self.get_input_data()
         if input_data is None:
             return
@@ -217,6 +198,12 @@ class DataInputGUI:
     
     def run(self):
         self.root.mainloop()
+
+    def toggle_widget(self, widget):
+        if widget['state'] == 'normal':
+            widget.config(state='disabled')
+        else:
+            widget.config(state='normal')
 
 
 def main():

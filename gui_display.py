@@ -3,7 +3,7 @@ from tkinter import ttk, messagebox
 import pandas as pd
 import pickle as pkl
 import os
-from model import MUSHROOM_DATA_FILE, PARAMS_FILE
+from model import MUSHROOM_DATA_FILE, PARAMS_FILE, COLUMN_NAMES
 
 
 class DataDisplayGUI:
@@ -133,17 +133,10 @@ class DataDisplayGUI:
     
     def load_data(self):
         try:
-            # Define column names
-            column_names = ['cap-shape', 'cap-surface', 'cap-color', 'bruises', 'odor', 
-                           'gill-attachment', 'gill-spacing', 'gill-size', 'gill-color',
-                           'stalk-shape', 'stalk-root', 'stalk-surface-above-ring',
-                           'stalk-surface-below-ring', 'stalk-color-above-ring',
-                           'stalk-color-below-ring', 'veil-type', 'veil-color', 'ring-number',
-                           'ring-type', 'spore-print-color', 'population', 'habitat', 'class']
             
-            df = pd.read_csv(MUSHROOM_DATA_FILE, header=None, names=column_names)
-            self.x = df.drop('class', axis=1)
-            self.y = df['class']
+            df = pd.read_csv(MUSHROOM_DATA_FILE, header=None, names=COLUMN_NAMES)
+            self.x = df.drop('poisonous', axis=1)
+            self.y = df['poisonous']
             
             # Load parameters if they exist
             self.parameters = {}
