@@ -41,7 +41,7 @@ x_train, x_test, y_train, y_test  = train_test_split(Xhot, y, test_size=0.25, ra
 
 
 ## Model
-modele_rf = RandomForestClassifier(
+model_rf = RandomForestClassifier(
     n_estimators=100,               # nb arbres dans forêt
     criterion='gini',               # critère pour construire les arbres (séparer les branches)
     max_depth=None,                 # profondeur maximale des arbres
@@ -64,14 +64,13 @@ modele_rf = RandomForestClassifier(
 
 
 ## Learning
-
-modele_rf.fit(x_train, y_train)
+model_rf.fit(x_train, y_train)
 
 
 ## Importances of variables
 
 # Importances calculées par modalité à cause du one-hot encoding
-importance = modele_rf.feature_importances_
+importance = model_rf.feature_importances_
 feature_names = Xhot.columns
 feature_importance = pd.Series(importance, index=feature_names)
 
@@ -89,7 +88,7 @@ print(fi_grouped)
 
 print(f"------------------------------------------------------------")
 
-predict = modele_rf.predict(x_test)
+predict = model_rf.predict(x_test)
 
 accuracy = accuracy_score(y_test, predict)
 print(f"Accuracy : {accuracy*100} %\n")
@@ -109,7 +108,7 @@ print(f"------------------------------------------------------------")
 
 pipeline = Pipeline(steps=[
     ("encoder", hotEncoder),
-    ("model", modele_rf)
+    ("model", model_rf)
 ])
 
 pipeline.fit(X, y)
