@@ -25,7 +25,6 @@ new_data = pd.DataFrame([{
     "stalk-surface-below-ring": "s",
     "stalk-color-above-ring": "w",
     "stalk-color-below-ring": "w",
-    "veil-type": "p",
     "veil-color": "w",
     "ring-number": "o",
     "ring-type": "p",

@@ -11,6 +11,10 @@ data = pd.read_csv("../mushroom/agaricus lepiota.csv")
 target = "poisonous"
 
 
+## Data cleaning
+data = data.drop(columns=["veil-type"])
+
+
 ## Infos
 print(data[target].value_counts())
 print(data.info())
