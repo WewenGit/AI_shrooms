@@ -4,7 +4,7 @@ import pandas as pd
 ## Test d'utilisation du modèle Random Forest stocké dans le fichier .pkl
 
 # Import pipeline (model + encoder)
-pipeline = joblib.load("rf_pipeline.pkl")
+pipeline = joblib.load("random_forest/rf_pipeline.pkl")
 
 # New observation (mushroom)
 new_data = pd.DataFrame([{

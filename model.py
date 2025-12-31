@@ -35,7 +35,7 @@ POSSIBLE_VALUES=[['e','p'],
     ['a','c','n','s','v','y'],
     ['g','l','m','p','u','w','d']]
 
-MEANINGS=['bell=b,conical=c,convex=x,flat=f, knobbed=k,sunken=s',
+MEANINGS=['e=edible,p=poisonous','bell=b,conical=c,convex=x,flat=f, knobbed=k,sunken=s',
  'fibrous=f,grooves=g,scaly=y,smooth=s',
  'brown=n,buff=b,cinnamon=c,gray=g,green=r,pink=p,purple=u,red=e,white=w,yellow=y',
  'no=f,yes=t',

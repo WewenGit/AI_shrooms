@@ -1,8 +1,11 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 import pandas as pd
+import numpy as np
 import os
 from model import PROJECT_DIR, COLUMN_NAMES, POSSIBLE_VALUES, MEANINGS
+from random_forest.random_forest import RandomForestAnalyzer as RFA
+from utils import importance_to_color
 
 
 class DataInputGUI:
@@ -10,7 +13,10 @@ class DataInputGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("Mushroom Data Input Form")
-        self.root.geometry("600x800")
+        self.root.geometry("1000x800")
+        
+        #random forest object
+        self.rf = RFA()
         
         self.entry_widgets = {}
         self.input_data = {}
@@ -51,21 +57,37 @@ class DataInputGUI:
         self.submit_button = ttk.Button(button_frame, text="Show Results", command=self.show_results)
         self.submit_button.pack(side=tk.LEFT, padx=5)
         
-        self.reset_button = ttk.Button(button_frame, text="Reset to Random", command=self.reset_to_random)
-        self.reset_button.pack(side=tk.LEFT, padx=5)
-
+        # self.reset_button = ttk.Button(button_frame, text="Reset to Random", command=self.reset_to_random)
+        # self.reset_button.pack(side=tk.LEFT, padx=5)
     
     def create_input_fields(self, parent_frame):
-        for idx,col in enumerate(COLUMN_NAMES[1:]):
+
+        importances=self.rf.compute_importance_feature()
+        for feature, importance in importances.items():
+            print(feature, importance)
+
+        sorted_cols = [col for col in importances.index if col in COLUMN_NAMES[1:]]
+        col_to_values = {col: POSSIBLE_VALUES[i] for i, col in enumerate(COLUMN_NAMES)}
+        col_to_meanings = {col: MEANINGS[i] for i, col in enumerate(COLUMN_NAMES)}
+        max_importance = np.max(importances)
+        col_to_color = {col: importance_to_color(imp, max_val=max_importance) for col, imp in importances.items()}
+
+
+        for col in sorted_cols:
             # Create frame for each row
             row_frame = ttk.Frame(parent_frame)
             row_frame.pack(fill=tk.X, pady=5, padx=5)
             
+            # Color
+            color = col_to_color[col]
+            style = ttk.Style()
+            style_name = f"{col}.TLabel"  # style unique par colonne
+            style.configure(style_name, foreground=color)
             # Label
-            label = ttk.Label(row_frame, text=f"{col}:", width=25)
+            label = ttk.Label(row_frame, text=f"{col}:", width=25, style=style_name)
             
             # Combobox or Entry depending on number of unique values
-            unique_vals = POSSIBLE_VALUES[idx+1]
+            unique_vals = col_to_values[col]
             
             if len(unique_vals) <= 20 and len(unique_vals) > 0:
                 # Use Combobox for columns with few unique values
@@ -81,19 +103,19 @@ class DataInputGUI:
                     widget.insert(0, unique_vals[0])  # Set default to first value
 
             # meanings
-            label2 = ttk.Label(row_frame, text=MEANINGS[idx], width='auto')
+            label2 = ttk.Label(row_frame, text=col_to_meanings[col], width='auto')
             
             # Toggle button to enable/disable field
-            toggle_var = tk.BooleanVar(value=True)
-            toggle_btn = ttk.Checkbutton(row_frame, variable=toggle_var, w=widget, v=self.toggle_widget(widget))
+            # toggle_var = tk.BooleanVar(value=True)
+            # toggle_btn = ttk.Checkbutton(row_frame, variable=toggle_var, w=widget, v=self.toggle_widget(widget))
             
-            toggle_btn.pack(side=tk.LEFT, padx=5)
+            # toggle_btn.pack(side=tk.LEFT, padx=5)
             label.pack(side=tk.LEFT, padx=5)
             widget.pack(side=tk.LEFT, padx=5, fill=tk.X)
             label2.pack(side=tk.LEFT, padx=5)
 
             self.entry_widgets[col] = widget
-    
+
     def get_input_data(self):
         data = {}
         for col, widget in self.entry_widgets.items():
@@ -101,7 +123,7 @@ class DataInputGUI:
             if not value:
                 messagebox.showwarning("Missing Value", f"Please provide a value for {col}")
                 return None
-            if widget['state']=='normal':
+            if str(widget['state'])=='normal':
                 data[col] = value
         return data
     
@@ -183,6 +205,7 @@ class DataInputGUI:
         except Exception as e:
             messagebox.showerror("Error", f"Failed to save data: {e}")
     
+    #not used
     def reset_to_random(self):
         """Reset all fields to random values from the dataset"""
         import random
@@ -199,6 +222,7 @@ class DataInputGUI:
     def run(self):
         self.root.mainloop()
 
+    #not used
     def toggle_widget(self, widget):
         if widget['state'] == 'normal':
             widget.config(state='disabled')
