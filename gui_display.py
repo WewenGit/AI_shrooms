@@ -134,9 +134,15 @@ class DataDisplayGUI:
     def load_data(self):
         try:
             
-            df = pd.read_csv(MUSHROOM_DATA_FILE, header=None, names=COLUMN_NAMES)
-            self.x = df.drop('poisonous', axis=1)
+            df = pd.read_csv(
+                MUSHROOM_DATA_FILE,
+                header=None,
+                names=COLUMN_NAMES,
+                index_col=False
+            )
             self.y = df['poisonous']
+            self.x = df.drop('poisonous', axis=1)
+
             
             # Load parameters if they exist
             self.parameters = {}
