@@ -121,6 +121,19 @@ class RandomForestAnalyzer:
 
         joblib.dump(pipeline, "rf_pipeline.pkl")
 
+    def makeObservation(self,data):
+        pipeline = joblib.load("random_forest/rf_pipeline.pkl")
+
+        # Prédiction
+        pred = pipeline.predict(data)
+        proba = pipeline.predict_proba(data)
+
+        print("Predicted class :", pred[0])
+        print("Probabilities  :", proba[0])
+
+        obs="Predicted class:"+str(pred[0])+"\nProbabilities :"+str(proba[0])
+        return obs
+
 
 
 

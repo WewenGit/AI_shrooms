@@ -125,13 +125,18 @@ class DataInputGUI:
                 return None
             if str(widget['state'])=='normal':
                 data[col] = value
-        return data
+        ordered_data = {key: data[key] for key in COLUMN_NAMES[1:]}
+        return ordered_data
     
     def show_results(self):
         input_data = self.get_input_data()
         if input_data is None:
             return
         
+        # Apply random forest
+        df = pd.DataFrame([input_data])
+        obs=self.rf.makeObservation(df)
+
         # Create new window for results
         result_window = tk.Toplevel(self.root)
         result_window.title("Input Results")
@@ -159,6 +164,10 @@ class DataInputGUI:
         
         # Display results in multiple formats
         results_text = "=" * 70 + "\n"
+        results_text += "RANDOM FOREST - RESULT PREDICTION\n"
+        results_text += "=" * 70 + "\n\n"
+        results_text += obs+"\n\n"
+        results_text += "=" * 70 + "\n"
         results_text += "INPUT DATA - DICTIONARY FORMAT\n"
         results_text += "=" * 70 + "\n\n"
         results_text += "{\n"
