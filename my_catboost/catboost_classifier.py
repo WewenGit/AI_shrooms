@@ -1,7 +1,7 @@
 import pandas as pd
 from catboost import CatBoostClassifier
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, confusion_matrix
 
 
 class CatBoostAnalyzer():
@@ -14,12 +14,10 @@ class CatBoostAnalyzer():
         ## Data cleaning
         self.data = self.data.drop(columns=["veil-type"])
 
-
+        self.text = ""
         ## Infos
-        print(self.data[self.target].value_counts())
-        print(self.data.info())
+        self.text+=str(self.data[self.target].value_counts())+"\n"
         #print(data.describe())
-        print()
 
 
         ## Get X and y
@@ -59,29 +57,72 @@ class CatBoostAnalyzer():
         self.feature_names = self.X.columns
         self.feature_importance = pd.Series(self.importance, index=self.feature_names).sort_values(ascending=False)
 
-        print("------ Importances ------")
-        print(self.feature_importance)
+        self.text+="------ Importances ------\n"
+        self.text+=self.feature_importance.to_string()+"\n"
 
     def test(self):
         ## Testing
 
-        print(f"------------------------------------------------------------")
+        self.text+="------------------------------------------------------------\n"
 
         predict = self.model_cb.predict(self.x_test)
 
         accuracy = accuracy_score(self.y_test, predict)
-        print(f"Accuracy : {accuracy*100} %\n")
+        self.text+="Accuracy : "+str(accuracy*100)+"%\n\n"
 
-        confusion_matrix = pd.DataFrame(
+        cm = pd.DataFrame(
             confusion_matrix(self.y_test, predict),
             index = ["edible_data", "poisonous_data"],
             columns = ["edible_predict", "poisonous_predict"]
         )
 
-        print(confusion_matrix)
+        self.text+=cm.to_string()+"\n"
 
-        print(f"------------------------------------------------------------")
+        self.text+="------------------------------------------------------------\n"
 
     def prod(self):
-        ## Production : Export model
-        self.model_cb.save_model("cb_model.cbm")
+        # Model
+        model_cb = CatBoostClassifier()
+        model_cb.load_model("cb_model.cbm")
+
+        # New observation (mushroom)
+        new_data = pd.DataFrame([{
+            "cap-shape": "x",
+            "cap-surface": "s",
+            "cap-color": "n",
+            "bruises": "t",
+            "odor": "p",
+            "gill-attachment": "f",
+            "gill-spacing": "c",
+            "gill-size": "n",
+            "gill-color": "k",
+            "stalk-shape": "e",
+            "stalk-root": "e",
+            "stalk-surface-above-ring": "s",
+            "stalk-surface-below-ring": "s",
+            "stalk-color-above-ring": "w",
+            "stalk-color-below-ring": "w",
+            "veil-color": "w",
+            "ring-number": "o",
+            "ring-type": "p",
+            "spore-print-color": "k",
+            "population": "s",
+            "habitat": "u"
+        }])
+
+        self.text += "------ Données test (champignon) ------\n"
+
+        for col, val in new_data.iloc[0].items():
+            self.text += f"{col:<30} : {val}\n"
+
+        self.text += "\n"
+
+        # Prédiction
+        pred = model_cb.predict(new_data)
+        proba = model_cb.predict_proba(new_data)
+
+        self.text+="Predicted class :"+str(pred[0])+"\n"
+        self.text+="Probabilities  :"+str(proba[0])+"\n"
+
+    def get_text(self):
+        return self.text

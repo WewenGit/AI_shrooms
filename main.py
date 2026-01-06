@@ -68,7 +68,7 @@ class MainMenu:
 
     # function applied to button catboost
     def launch_catboost_app(self):
-        self.update_status("Launching catboost test...")
+        self.update_status("CatBoost Test Running in the back, please be patient...")
         try:
             input_file = os.path.join(self.script_dir, "catboost_test.py")
             if os.path.exists(input_file):
@@ -81,7 +81,7 @@ class MainMenu:
     # debug, status function
     def update_status(self, message):
         self.status_label.config(text=message)
-        self.root.after(3000, lambda: self.status_label.config(text="Ready"))
+        self.root.after(30000, lambda: self.status_label.config(text="Ready"))
 
     def run(self):
         self.root.mainloop()
