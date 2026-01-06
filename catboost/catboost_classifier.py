@@ -66,6 +66,8 @@ print(feature_importance)
 
 print(f"------------------------------------------------------------")
 
+#x_test['odor'] = x_test['odor'].apply(lambda x: '?')
+
 predict = model_cb.predict(x_test)
 
 accuracy = accuracy_score(y_test, predict)

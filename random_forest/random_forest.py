@@ -92,6 +92,14 @@ print(fi_grouped)
 
 print(f"------------------------------------------------------------")
 
+# x_test['odor_c'] = x_test['odor_c'].map({1:0})
+# x_test['odor_l'] = x_test['odor_l'].map({1:0})
+# x_test['odor_m'] = x_test['odor_m'].map({1:0})
+# x_test['odor_n'] = x_test['odor_n'].map({1:0})
+# x_test['odor_p'] = x_test['odor_p'].map({1:0})
+# x_test['odor_s'] = x_test['odor_s'].map({1:0})
+# x_test['odor_y'] = x_test['odor_y'].map({1:0})
+
 predict = model_rf.predict(x_test)
 
 accuracy = accuracy_score(y_test, predict)
