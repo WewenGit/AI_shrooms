@@ -11,7 +11,7 @@ class MainMenu:
         # def object initialization
         self.root = root
         self.root.title("Mushroom AI - Main Menu")
-        self.root.geometry("500x500")
+        self.root.geometry("500x550")
         
         # to get this rep and the others .py to execute
         self.script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -32,6 +32,8 @@ class MainMenu:
         self.display_btn = ttk.Button(button_frame, text="Display Data & Parameters", command=self.launch_display_app)
         self.display_btn.pack(fill=tk.X, pady=10, ipady=15)
         self.input_btn = ttk.Button(button_frame, text="User Input Form", command=self.launch_input_app)
+        self.input_btn.pack(fill=tk.X, pady=10, ipady=15)
+        self.input_btn = ttk.Button(button_frame, text="CatBoost Test", command=self.launch_catboost_app)
         self.input_btn.pack(fill=tk.X, pady=10, ipady=15)
         self.exit_btn = ttk.Button(button_frame, text="Exit", command=self.root.quit)
         self.exit_btn.pack(fill=tk.X, pady=10, ipady=15)
@@ -57,6 +59,18 @@ class MainMenu:
         self.update_status("Launching input form...")
         try:
             input_file = os.path.join(self.script_dir, "input_form.py")
+            if os.path.exists(input_file):
+                subprocess.Popen([sys.executable, input_file])
+            else:
+                self.update_status("Error: input_form.py not found")
+        except Exception as e:
+            self.update_status(f"Error: {str(e)}")
+
+    # function applied to button catboost
+    def launch_catboost_app(self):
+        self.update_status("Launching catboost test...")
+        try:
+            input_file = os.path.join(self.script_dir, "catboost_test.py")
             if os.path.exists(input_file):
                 subprocess.Popen([sys.executable, input_file])
             else:

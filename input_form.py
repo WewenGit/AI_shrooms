@@ -231,13 +231,6 @@ class DataInputGUI:
     def run(self):
         self.root.mainloop()
 
-    #not used
-    def toggle_widget(self, widget):
-        if widget['state'] == 'normal':
-            widget.config(state='disabled')
-        else:
-            widget.config(state='normal')
-
 
 def main():
     root = tk.Tk()

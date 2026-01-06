@@ -1,5 +1,5 @@
 import pandas as pd
-from catboost import CatBoostClassifier
+from my_catboost import CatBoostClassifier
 
 
 ## Test d'utilisation du modèle CatBoost stocké dans le fichier .cbm
